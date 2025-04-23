@@ -1,0 +1,6 @@
+@LoncotesCountyLib_HostAddress = http://localhost:5171
+
+GET {{LoncotesCountyLib_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
