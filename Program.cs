@@ -19,9 +19,7 @@ app.UseHttpsRedirection();
 
 app.Run();
 
-// ! Current status, have set up files for application but have 
-// ! only set up Patron file with namespace and class. Neet to 
-// ! flesh out remainder. 
-// ! Working on step 2 of chpt 1. 
+// ! Current status, Working on step 5 of chpt.
+// ! Need to complete LoncotesCountyLibdbContext class model creation with seed data 
 
 // ? https://github.com/nashville-software-school/server-side-dotnet-curriculum/blob/main/book-3-sql-efcore/chapters/loncotes-setup.md
