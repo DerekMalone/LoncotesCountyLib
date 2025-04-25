@@ -33,10 +33,21 @@ app.MapGet("/api/materials", (int? materialTypeId, int? genreId, LoncotesCountyL
 {
     // ! Need to logic through using query params established above. 
     // ! Could do if statements? Commented out code at bottom works but I didn't write it...
-    return Results.Ok(db.Materials
+    var filteredMaterials = db.Materials
     .Include(m => m.MaterialType)
     .Include(m => m.Genre)
-    .Where(g => g.OutOfCirculationSince == null)
+    .Where(m => m.OutOfCirculationSince == null);
+
+    if (materialTypeId != null)
+    {
+        filteredMaterials = filteredMaterials.Where(m => m.MaterialTypeId == materialTypeId);
+    }
+    if (genreId != null)
+    {
+        filteredMaterials = filteredMaterials.Where(m => m.GenreId == genreId);
+    }
+
+    var materials = filteredMaterials
     .Select(m => new MaterialDTO
     {
         Id = m.Id,
@@ -55,45 +66,13 @@ app.MapGet("/api/materials", (int? materialTypeId, int? genreId, LoncotesCountyL
             Name = m.Genre.Name
         },
         OutOfCirculationSince = m.OutOfCirculationSince
-    }).ToList());
+    }).ToList();
 
-    //     IQueryable<Material> query = db.Materials
-    //     .Include(m => m.MaterialType)
-    //     .Include(m => m.Genre)
-    //     .Where(m => m.OutOfCirculationSince == null);
-    
-    // // Apply filters only if parameters are provided
-    // if (materialTypeId != null)
-    // {
-    //     query = query.Where(m => m.MaterialTypeId == materialTypeId);
-    // }
-    
-    // if (genreId != null)
-    // {
-    //     query = query.Where(m => m.GenreId == genreId);
-    // }
-    
-    // List<MaterialDTO> materials = query.Select(m => new MaterialDTO
-    // {
-    //     Id = m.Id,
-    //     MaterialName = m.MaterialName,
-    //     MaterialTypeId = m.MaterialTypeId,
-    //     MaterialType = new MaterialTypeDTO
-    //     {
-    //         Id = m.MaterialType.Id,
-    //         Name = m.MaterialType.Name,
-    //         CheckoutDays = m.MaterialType.CheckoutDays
-    //     },
-    //     GenreId = m.GenreId,
-    //     Genre = new GenreDTO
-    //     {
-    //         Id = m.Genre.Id,
-    //         Name = m.Genre.Name
-    //     },
-    //     OutOfCirculationSince = m.OutOfCirculationSince
-    // }).ToList();
-    
-    // return Results.Ok(materials);
+    if (materials.Count < 1)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(materials);
 });
 
 
@@ -107,7 +86,7 @@ app.MapPost("/api/materials", (LoncotesCountyLibDbContext db, Material material)
 
 app.Run();
 
-// ! Current status, Working on step 1 of chpt 2
-// ? Just realized that I seeded the db with materials that ALL have out of circulation dates...
+// ! Current status, Create get single Material
+
 
 // ? https://github.com/nashville-software-school/server-side-dotnet-curriculum/blob/main/book-3-sql-efcore/chapters/loncotes-basic-features.md
