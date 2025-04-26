@@ -129,8 +129,61 @@ app.MapPut("/api/materials/{id}/delete", (LoncotesCountyLibDbContext db, int id)
     
 });
 
+app.MapGet("/api/materialTypes", (LoncotesCountyLibDbContext db) => 
+{
+    var materialTypes = db.MaterialTypes.Select(mt => new MaterialTypeDTO
+    {
+        Id = mt.Id,
+        Name = mt.Name,
+        CheckoutDays = mt.CheckoutDays
+    }).ToList();
+
+    if (materialTypes == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(materialTypes);
+});
+
+app.MapGet("/api/genres", (LoncotesCountyLibDbContext db) => 
+{
+    var genres = db.Genres.Select(g => new GenreDTO
+    {
+        Id = g.Id,
+        Name = g.Name
+    }).ToList();
+
+    if (genres == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(genres);
+});
+
+app.MapGet("/api/patrons", (LoncotesCountyLibDbContext db) => 
+{
+    var patrons = db.Patrons.Select(p => new PatronDTO
+    {
+        Id = p.Id,
+        FirstName = p.FirstName,
+        LastName = p.LastName,
+        Address = p.Address,
+        Email = p.Email,
+        IsActive = p.IsActive
+    }).ToList();
+
+    if (patrons == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(patrons);
+});
+
 app.Run();
 
 
-// ! Current status, Get Material Types
+// ! Current status, Get Patron with Checkouts
 // ? https://github.com/nashville-software-school/server-side-dotnet-curriculum/blob/main/book-3-sql-efcore/chapters/loncotes-basic-features.md
