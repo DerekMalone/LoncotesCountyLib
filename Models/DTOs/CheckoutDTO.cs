@@ -1,6 +1,6 @@
 namespace LoncotesCountyLib.Models.DTO;
 
-public class CheckoutDaysDTO
+public class CheckoutDTO
 {
     public int Id {get; set;}
     public int MaterialId {get; set;}

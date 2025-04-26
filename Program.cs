@@ -182,6 +182,29 @@ app.MapGet("/api/patrons", (LoncotesCountyLibDbContext db) =>
     return Results.Ok(patrons);
 });
 
+app.MapGet("/api/patrons/{id}", (LoncotesCountyLibDbContext db, int id) => 
+{
+    // ! Possible solution for issue. Create var that stores list of checkouts that have 
+    // ! patrionId that matches the id param.
+    // ! Create a second var and attach the checkout list result to the patron that matches the id param.
+    // ! need to figure out how to add a list to a result maybe List<Checkout> = checkouts?
+    // ? Time for sleep now.
+
+    // var patrons = db.Checkouts.Include(c => c.Patron)
+    // .Include(c => c.Material)
+    // .ThenInclude(m => m.MaterialType)
+    // .Select(c => new CheckoutDTO
+    // {
+    //     Id = c.Id,
+    //     MaterialId = c.MaterialId,
+    //     Material = new MaterialDTO
+    //     {
+    //         Id = c.Material.Id,
+
+    //     }
+    // });
+});
+
 app.Run();
 
 

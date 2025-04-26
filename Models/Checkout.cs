@@ -5,11 +5,10 @@ namespace LoncotesCountyLib.Models;
 public class Checkout
 {
     public int Id {get; set;}
-    [Required]
     public int MaterialId {get; set;}
-    [Required]
+    public Material Material {get; set;}
     public int PatronId {get; set;}
-    [Required]
+    public Patron Patron {get; set;}
     public DateTime CheckoutDate {get; set;}
     public DateTime ReturnDate {get; set;}
 }
