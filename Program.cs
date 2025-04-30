@@ -190,19 +190,13 @@ app.MapGet("/api/patrons/{id}", (LoncotesCountyLibDbContext db, int id) =>
     // ! need to figure out how to add a list to a result maybe List<Checkout> = checkouts?
     // ? Time for sleep now.
 
-    // var patrons = db.Checkouts.Include(c => c.Patron)
-    // .Include(c => c.Material)
-    // .ThenInclude(m => m.MaterialType)
-    // .Select(c => new CheckoutDTO
-    // {
-    //     Id = c.Id,
-    //     MaterialId = c.MaterialId,
-    //     Material = new MaterialDTO
-    //     {
-    //         Id = c.Material.Id,
-
-    //     }
-    // });
+// On to something below just need to figure out how to .include all the other bs.
+    return  db.Patrons.Join(db.Checkouts, patron => patron.Id, checkout => checkout.PatronId, (patron, checkout) => new PatronDTO
+    {
+        Id = patron.Id,
+        
+    });
+    
 });
 
 app.Run();
