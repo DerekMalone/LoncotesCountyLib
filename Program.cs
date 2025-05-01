@@ -184,20 +184,78 @@ app.MapGet("/api/patrons", (LoncotesCountyLibDbContext db) =>
 
 app.MapGet("/api/patrons/{id}", (LoncotesCountyLibDbContext db, int id) => 
 {
-    // ! Possible solution for issue. Create var that stores list of checkouts that have 
-    // ! patrionId that matches the id param.
-    // ! Create a second var and attach the checkout list result to the patron that matches the id param.
-    // ! need to figure out how to add a list to a result maybe List<Checkout> = checkouts?
-    // ? Time for sleep now.
 
-// On to something below just need to figure out how to .include all the other bs.
-    return  db.Patrons.Join(db.Checkouts, patron => patron.Id, checkout => checkout.PatronId, (patron, checkout) => new PatronDTO
+    return db.Patrons
+    .Where(p => p.Id == id)
+    .Select(p => new PatronDTO
     {
-        Id = patron.Id,
-        
-    });
-    
+        Id = p.Id,
+        FirstName = p.FirstName,
+        LastName = p.LastName,
+        Address = p.Address,
+        Email = p.Email,
+        IsActive = p.IsActive,
+        Checkouts = db.Checkouts
+        .Where(c => c.PatronId == p.Id)        
+        .Select(c => new CheckoutDTO
+        {
+            Id = c.Id,
+            CheckoutDate = c.CheckoutDate,
+            ReturnDate = c.ReturnDate,
+            MaterialId = c.MaterialId,
+            Material = new MaterialDTO
+            {
+                Id = c.Material.Id,
+                MaterialName = c.Material.MaterialName,
+                MaterialTypeId = c.Material.MaterialTypeId,
+                MaterialType = new MaterialTypeDTO
+                {
+                    Id = c.Material.MaterialType.Id,
+                    Name = c.Material.MaterialType.Name,
+                    CheckoutDays = c.Material.MaterialType.CheckoutDays
+                }
+                }
+        }).ToList()
+    }).SingleOrDefault();
+
 });
+
+app.MapPut("/api/patrons/{id}", (LoncotesCountyLibDbContext db, int id, Patron patron) => 
+{
+    Patron patronToUpdate = db.Patrons.SingleOrDefault(p => p.Id == id);
+
+    if (patronToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+
+    if (patron.Address != null)
+    {
+        patronToUpdate.Address = patron.Address;
+    }
+    if (patron.Email != null)
+    {
+        patronToUpdate.Email = patron.Email;
+    }
+
+    db.SaveChanges();
+    return Results.NoContent();
+
+});
+
+app.MapPut("/api/patrons/{id}/deactivate", (LoncotesCountyLibDbContext db, int id) =>
+{
+    Patron deactivatePatron = db.Patrons.SingleOrDefault(p => p.Id == id);
+
+    if (deactivatePatron.IsActive == true)
+    {
+        deactivatePatron.IsActive = false;
+    }
+
+    db.SaveChanges();
+    return Results.NoContent();
+});
+
 
 app.Run();
 

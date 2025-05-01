@@ -19,3 +19,13 @@ LEFT JOIN "MaterialTypes" mt ON mt."Id" = m."MaterialTypeId"
 INSERT INTO "Checkouts" ("Id", "MaterialId", "PatronId", "CheckoutDate", "ReturnDate") 
 VALUES (1, 1, 1, '2025, 04, 29', '2025, 05, 05')
 
+INSERT INTO "Checkouts" ("Id", "MaterialId", "PatronId", "CheckoutDate", "ReturnDate") 
+VALUES (2, 2, 2, '2025, 04, 29', '2025, 05, 05')
+
+INSERT INTO "Checkouts" ("Id", "MaterialId", "PatronId", "CheckoutDate", "ReturnDate") 
+VALUES (3, 2, 1, '2025, 04, 29', '2025, 05, 05')
+
+UPDATE "Patrons"
+SET "IsActive" = true
+WHERE "Id" = 2;
+
