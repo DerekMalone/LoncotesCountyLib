@@ -256,9 +256,43 @@ app.MapPut("/api/patrons/{id}/deactivate", (LoncotesCountyLibDbContext db, int i
     return Results.NoContent();
 });
 
+app.MapPost("/api/checkouts", (LoncotesCountyLibDbContext db, Checkout checkout) =>
+{
+    var materialDetails = db.Materials.Include(m => m.MaterialType)
+    .Where(m => m.Id == checkout.MaterialId)
+    .SingleOrDefault();
+
+    if (materialDetails == null)
+    {
+        return Results.NoContent();
+    }
+
+    Checkout newCheckout = new Checkout
+    {
+        MaterialId = checkout.MaterialId,
+        PatronId = checkout.PatronId,
+        CheckoutDate = DateTime.Today,
+        ReturnDate = DateTime.Today.AddDays(materialDetails.MaterialType.CheckoutDays)
+
+    };
+    db.Checkouts.Add(newCheckout);
+    db.SaveChanges();
+    return Results.Created($"/api/checkouts/{newCheckout.Id}", newCheckout);    
+});
+
+app.MapPut("/api/checkouts/{id}", (LoncotesCountyLibDbContext db, int id) =>
+{
+    Checkout returnedCheckout = db.Checkouts.SingleOrDefault(c => c.Id == id);
+
+    returnedCheckout.ReturnDate = DateTime.Today;
+
+    db.SaveChanges();
+    return Results.NoContent();
+});
+
 
 app.Run();
 
 
-// ! Current status, Get Patron with Checkouts
+// ! Current status, Checkout a Material
 // ? https://github.com/nashville-software-school/server-side-dotnet-curriculum/blob/main/book-3-sql-efcore/chapters/loncotes-basic-features.md
