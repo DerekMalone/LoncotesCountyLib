@@ -31,8 +31,6 @@ app.UseHttpsRedirection();
 
 app.MapGet("/api/materials", (LoncotesCountyLibDbContext db, int? materialTypeId, int? genreId) => 
 {
-    // ! Need to logic through using query params established above. 
-    // ! Could do if statements? Commented out code at bottom works but I didn't write it...
     var filteredMaterials = db.Materials
     .Include(m => m.MaterialType)
     .Include(m => m.Genre)
@@ -292,7 +290,3 @@ app.MapPut("/api/checkouts/{id}", (LoncotesCountyLibDbContext db, int id) =>
 
 
 app.Run();
-
-
-// ! Current status, Checkout a Material
-// ? https://github.com/nashville-software-school/server-side-dotnet-curriculum/blob/main/book-3-sql-efcore/chapters/loncotes-basic-features.md
