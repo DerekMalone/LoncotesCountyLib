@@ -290,3 +290,6 @@ app.MapPut("/api/checkouts/{id}", (LoncotesCountyLibDbContext db, int id) =>
 
 
 app.Run();
+
+// ! Current Status: Start of chapter
+// ? https://github.com/nashville-software-school/server-side-dotnet-curriculum/blob/main/book-3-sql-efcore/chapters/loncotes-get-available-materials.md
