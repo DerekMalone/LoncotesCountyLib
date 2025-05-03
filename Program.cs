@@ -73,6 +73,23 @@ app.MapGet("/api/materials", (LoncotesCountyLibDbContext db, int? materialTypeId
     return Results.Ok(materials);
 });
 
+app.MapGet("/api/materials/available", (LoncotesCountyLibDbContext db) =>
+{
+    return db.Materials
+    .Where(m => m.OutOfCirculationSince == null)
+    .Where(m => m.Checkouts.All(c => c.ReturnDate != null))
+    .Select(material => new MaterialDTO
+    {
+        Id = material.Id,
+        MaterialName = material.MaterialName,
+        MaterialTypeId = material.MaterialTypeId,
+        GenreId = material.GenreId,
+        OutOfCirculationSince = material.OutOfCirculationSince
+    })
+    .ToList();
+
+});
+
 app.MapGet("/api/materials/{id}", (LoncotesCountyLibDbContext db, int id) => 
 {
     var material = db.Materials.Where(m => m.Id == id)
@@ -106,9 +123,16 @@ app.MapGet("/api/materials/{id}", (LoncotesCountyLibDbContext db, int id) =>
 
 app.MapPost("/api/materials", (LoncotesCountyLibDbContext db, Material material) =>
 {
-    db.Materials.Add(material);
+    Material _material = new Material
+    {
+        MaterialName = material.MaterialName,
+        MaterialTypeId = material.MaterialTypeId,
+        GenreId = material.GenreId,
+        OutOfCirculationSince = null
+    };
+    db.Materials.Add(_material);
     db.SaveChanges();
-    return Results.Created($"/api/materials/{material.Id}", material);
+    return Results.Created($"/api/materials/{_material.Id}", _material);
 });
 
 app.MapPut("/api/materials/{id}/delete", (LoncotesCountyLibDbContext db, int id) => 
@@ -270,7 +294,8 @@ app.MapPost("/api/checkouts", (LoncotesCountyLibDbContext db, Checkout checkout)
         MaterialId = checkout.MaterialId,
         PatronId = checkout.PatronId,
         CheckoutDate = DateTime.Today,
-        ReturnDate = DateTime.Today.AddDays(materialDetails.MaterialType.CheckoutDays)
+        // ReturnDate = DateTime.Today.AddDays(materialDetails.MaterialType.CheckoutDays)
+        ReturnDate = null
 
     };
     db.Checkouts.Add(newCheckout);
