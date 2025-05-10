@@ -360,5 +360,5 @@ app.MapGet("/api/checkouts/overdue", (LoncotesCountyLibDbContext db) =>
 
 app.Run();
 
-// ! Current Status: Need to pick up no testing overdue checkouts to determine if it works. Currently no overdue books in db.
+// ! Current Status: Need to pick up on testing overdue checkouts to determine if it works. Currently no overdue books in db.
 // ? https://github.com/nashville-software-school/server-side-dotnet-curriculum/blob/main/book-3-sql-efcore/chapters/loncontes-overdue-checkouts.md
